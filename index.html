@@ -23,7 +23,13 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 10px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
         }
 
         .container {
@@ -33,18 +39,35 @@
 
         .header-container {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 12px;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             position: relative;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .header-container {
+                flex-direction: row;
+                margin-bottom: 25px;
+                text-align: left;
+            }
         }
 
         .header-title {
-            text-align: center;
             color: var(--primary-color);
             margin: 0;
             font-weight: 600;
-            flex-grow: 1;
+            font-size: 1.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .header-title {
+                font-size: 1.5rem;
+                flex-grow: 1;
+                text-align: center;
+            }
         }
 
         .btn-clear-all {
@@ -59,8 +82,13 @@
             font-size: 13px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
-            position: absolute;
-            right: 0;
+        }
+
+        @media (min-width: 768px) {
+            .btn-clear-all {
+                position: absolute;
+                right: 0;
+            }
         }
 
         .btn-clear-all:hover {
@@ -70,17 +98,36 @@
 
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 15px;
             align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr 380px;
+                gap: 20px;
+            }
         }
 
         .card {
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 20px;
+            padding: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .card {
+                padding: 20px;
+            }
+        }
+
+        /* Responsive Table Container */
+        .table-responsive {
+            width: 100%;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .controls {
@@ -156,8 +203,16 @@
             width: 100%;
             border-collapse: collapse;
             text-align: center;
-            font-size: 14px;
-            table-layout: fixed;
+            font-size: 13px;
+            min-width: 700px;
+        }
+
+        @media (min-width: 768px) {
+            table {
+                font-size: 14px;
+                min-width: auto;
+                table-layout: fixed;
+            }
         }
 
         th,
@@ -317,39 +372,71 @@
         }
 
         .summary-card {
-            margin-top: 20px;
+            margin-top: 15px;
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 15px 20px;
+            padding: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .summary-card {
+                margin-top: 20px;
+                padding: 15px 20px;
+            }
         }
 
         .summary-grid {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             justify-content: space-around;
             text-align: center;
             flex-wrap: wrap;
         }
 
+        @media (min-width: 768px) {
+            .summary-grid {
+                gap: 20px;
+            }
+        }
+
         .summary-box {
             background: #f8fafc;
             border: 1px solid var(--border-color);
-            padding: 10px 15px;
+            padding: 10px 12px;
             border-radius: 8px;
             flex: 1;
-            min-width: 180px;
+            min-width: 140px;
+        }
+
+        @media (min-width: 768px) {
+            .summary-box {
+                min-width: 180px;
+                padding: 10px 15px;
+            }
         }
 
         .summary-box h4 {
             margin: 0 0 5px 0;
             color: #475569;
-            font-size: 13px;
+            font-size: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .summary-box h4 {
+                font-size: 13px;
+            }
         }
 
         .summary-box div {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
+        }
+
+        @media (min-width: 768px) {
+            .summary-box div {
+                font-size: 15px;
+            }
         }
 
         .modal-overlay {
@@ -363,14 +450,17 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         .modal-content {
             background: white;
-            padding: 25px;
+            padding: 15px;
             border-radius: 12px;
-            width: 950px;
-            max-height: 85vh;
+            width: 100%;
+            max-width: 950px;
+            max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             text-align: left;
@@ -378,18 +468,39 @@
             position: relative;
         }
 
+        @media (min-width: 768px) {
+            .modal-content {
+                padding: 25px;
+            }
+        }
+
         .modal-content h3 {
             margin-top: 0;
             color: var(--primary-color);
             text-align: center;
+            font-size: 1.1rem;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content h3 {
+                font-size: 1.35rem;
+            }
         }
 
         .view-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 12px;
             margin-top: 10px;
-            table-layout: fixed;
+            min-width: 600px;
+        }
+
+        @media (min-width: 768px) {
+            .view-table {
+                font-size: 13px;
+                min-width: auto;
+                table-layout: fixed;
+            }
         }
 
         .view-table th,
@@ -431,23 +542,39 @@
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         .hdp-sub-modal-box {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 12px;
-            width: 320px;
+            width: 100%;
+            max-width: 320px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             text-align: center;
             border: 1px solid var(--border-color);
         }
 
+        @media (min-width: 768px) {
+            .hdp-sub-modal-box {
+                padding: 20px;
+            }
+        }
+
         .hdp-sub-modal-box h4 {
             margin-top: 0;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: var(--primary-color);
-            font-size: 15px;
+            font-size: 14px;
+        }
+
+        @media (min-width: 768px) {
+            .hdp-sub-modal-box h4 {
+                font-size: 15px;
+                margin-bottom: 15px;
+            }
         }
 
         .hdp-preset-grid {
@@ -478,7 +605,7 @@
         .hdp-sign-toggle {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .hdp-sign-btn {
@@ -514,23 +641,25 @@
                 <div class="controls">
                     <button class="btn" onclick="addRow()">+ เพิ่มแถวการแข่งขัน</button>
                 </div>
-                <table id="footballTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 100px;">วันที่</th>
-                            <th style="width: 75px;">เวลา</th>
-                            <th style="width: 110px;">สถานะ</th>
-                            <th style="width: 130px;">เหย้า</th>
-                            <th style="width: 130px;">เยือน</th>
-                            <th class="score-header" style="width: 65px;">สกอร์เหย้า</th>
-                            <th class="score-header" style="width: 65px;">สกอร์เยือน</th>
-                            <th style="width: 70px;">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- ข้อมูลจะถูกโหลดจาก LocalStorage อัตโนมัติ -->
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table id="footballTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">วันที่</th>
+                                <th style="width: 75px;">เวลา</th>
+                                <th style="width: 110px;">สถานะ</th>
+                                <th style="width: 130px;">เหย้า</th>
+                                <th style="width: 130px;">เยือน</th>
+                                <th class="score-header" style="width: 65px;">สกอร์เหย้า</th>
+                                <th class="score-header" style="width: 65px;">สกอร์เยือน</th>
+                                <th style="width: 70px;">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- ข้อมูลจะถูกโหลดจาก LocalStorage อัตโนมัติ -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- ฝั่งขวา: รายชื่อบิลและการจัดการ -->
@@ -548,7 +677,7 @@
 
         <!-- ส่วนสรุปผลภาพรวมด้านล่าง -->
         <div class="summary-card">
-            <h4 style="margin: 0 0 10px 0; color: var(--primary-color);">📊 สรุปภาพรวมทุกบิล (ยอดรวมทั้งสิ้น)</h4>
+            <h4 style="margin: 0 0 10px 0; color: var(--primary-color); font-size: 13px;">📊 สรุปภาพรวมทุกบิล (ยอดรวมทั้งสิ้น)</h4>
             <div class="summary-grid" id="summaryGridContainer"></div>
         </div>
     </div>
@@ -565,7 +694,7 @@
 
             <p style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">
                 เลือกคู่แข่งขันที่ต้องการใส่ลงในบิลนี้:</p>
-            <div id="modalSelectMatchList" style="max-height: 40vh; overflow-y: auto;">
+            <div class="table-responsive" id="modalSelectMatchList" style="max-height: 40vh;">
                 <!-- รายการคู่แข่งขันให้เลือกตอนสร้างบิล -->
             </div>
 
@@ -582,15 +711,15 @@
             <h3 id="viewModalTitle">รายละเอียดบิล</h3>
 
             <div
-                style="display: flex; gap: 15px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                <div style="flex: 1;">
+                style="display: flex; flex-direction: column; gap: 10px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                <div style="width: 100%;">
                     <label style="font-size: 12px; font-weight: 600; color: #475569;">💰 จำนวนเงินเดิมพันบิลนี้
                         (บาท):</label>
                     <input type="number" id="modalStakeInput" value="100" min="0" oninput="updateModalPreviewCalc()"
                         style="margin-top: 4px; font-weight: 600;">
                 </div>
                 <div id="modalBillSummaryPreview"
-                    style="flex: 1; text-align: right; font-size: 13px; font-weight: 600;">
+                    style="width: 100%; text-align: left; font-size: 13px; font-weight: 600;">
                     <!-- แสดงผลสรุปรายได้เฉพาะบิลนี้แบบ Real-time -->
                 </div>
             </div>
@@ -598,7 +727,7 @@
             <p style="font-size: 13px; color: #64748b; margin-top: 0;">ตั้งค่าตัวเลือก เรตราคา และค่าน้ำ
                 สำหรับคู่ที่อยู่ในบิลนี้:</p>
 
-            <div id="viewModalBody" style="max-height: 40vh; overflow-y: auto;">
+            <div class="table-responsive" id="viewModalBody" style="max-height: 40vh;">
                 <!-- ตารางตั้งค่าเฉพาะคู่ในบิล -->
             </div>
 
