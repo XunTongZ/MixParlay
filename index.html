@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบเก็บบิลและคำนวณผลฟุตบอลอัตโนมัติ</title>
+    <!-- Google Font Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #334155;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .header-title {
+            text-align: center;
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        .btn-clear-all {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+            position: absolute;
+            right: 0;
+        }
+
+        .btn-clear-all:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .controls {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-view {
+            background-color: #3b82f6;
+            padding: 4px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .btn-view:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-danger-sub {
+            background-color: #ef4444;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            border: none;
+        }
+
+        .btn-danger-sub:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-danger-row {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-danger-row:hover {
+            background-color: #fecaca;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 14px;
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border-color);
+            padding: 8px 6px;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .score-header {
+            background-color: #f0fdf4 !important;
+            color: #065f46;
+        }
+
+        input,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            text-align: center;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-notstart {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+        }
+
+        .status-live {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-ended {
+            background-color: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .bill-panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .bill-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bill-item-row {
+            display: flex;
+            flex-direction: column;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            gap: 6px;
+        }
+
+        .bill-item-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        .bill-item-info {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 12px;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 4px;
+        }
+
+        .bill-item-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .win {
+            color: #059669;
+            font-weight: 600;
+            background-color: #ecfdf5;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        .lose {
+            color: #dc2626;
+            font-weight: 600;
+            background-color: #fef2f2;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        .draw {
+            color: #d97706;
+            font-weight: 600;
+            background-color: #fffbeb;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        .pending {
+            color: #64748b;
+        }
+
+        .summary-card {
+            margin-top: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+        }
+
+        .summary-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: space-around;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        .summary-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .summary-box h4 {
+            margin: 0 0 5px 0;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .summary-box div {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 950px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            font-family: 'Prompt', sans-serif;
+            position: relative;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .view-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+            table-layout: fixed;
+        }
+
+        .view-table th,
+        .view-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 6px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .view-table th {
+            background-color: #f1f5f9;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        /* Pop-up ย่อยสำหรับเลือกเรตราคา (เด้งทับเหนือ Modal หลัก) */
+        .hdp-sub-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .hdp-sub-modal-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 320px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .hdp-sub-modal-box h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 15px;
+        }
+
+        .hdp-preset-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .hdp-preset-btn {
+            padding: 8px 4px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #f8fafc;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            color: var(--text-main);
+        }
+
+        .hdp-preset-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .hdp-sign-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .hdp-sign-btn {
+            flex: 1;
+            padding: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #f8fafc;
+            cursor: pointer;
+        }
+
+        .hdp-sign-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header-container">
+            <h2 class="header-title">⚽ ระบบเก็บบิลและคำนวณผลฟุตบอลอัตโนมัติ</h2>
+            <button class="btn-clear-all" onclick="clearAllData()">🗑️ ล้างข้อมูลทั้งหมด</button>
+        </div>
+
+        <div class="main-layout">
+            <!-- ฝั่งซ้าย: ตารางข้อมูลการแข่งขันหลัก -->
+            <div class="card">
+                <div class="controls">
+                    <button class="btn" onclick="addRow()">+ เพิ่มแถวการแข่งขัน</button>
+                </div>
+                <table id="footballTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">วันที่</th>
+                            <th style="width: 75px;">เวลา</th>
+                            <th style="width: 110px;">สถานะ</th>
+                            <th style="width: 130px;">เหย้า</th>
+                            <th style="width: 130px;">เยือน</th>
+                            <th class="score-header" style="width: 65px;">สกอร์เหย้า</th>
+                            <th class="score-header" style="width: 65px;">สกอร์เยือน</th>
+                            <th style="width: 70px;">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- ข้อมูลจะถูกโหลดจาก LocalStorage อัตโนมัติ -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ฝั่งขวา: รายชื่อบิลและการจัดการ -->
+            <div class="card">
+                <h3 class="bill-panel-title">จัดการบิลแข่งขัน</h3>
+                <div class="controls" style="margin-bottom: 15px;">
+                    <button class="btn" style="background-color: #3b82f6; width: 100%;" onclick="openAddBillModal()">+
+                        สร้างบิลใหม่</button>
+                </div>
+                <div class="bill-list-container" id="billListContainer">
+                    <!-- ข้อมูลบิลจะถูกโหลดจาก LocalStorage อัตโนมัติ -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ส่วนสรุปผลภาพรวมด้านล่าง -->
+        <div class="summary-card">
+            <h4 style="margin: 0 0 10px 0; color: var(--primary-color);">📊 สรุปภาพรวมทุกบิล (ยอดรวมทั้งสิ้น)</h4>
+            <div class="summary-grid" id="summaryGridContainer"></div>
+        </div>
+    </div>
+
+    <!-- Modal สำหรับสร้างบิลใหม่ -->
+    <div class="modal-overlay" id="addBillModal">
+        <div class="modal-content">
+            <h3>สร้างบิลใหม่</h3>
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 13px; font-weight: 500;">ชื่อบิล:</label>
+                <input type="text" id="modalBillName" placeholder="เช่น บิลชุดสเต็ป, บิลเดี่ยว VIP"
+                    style="margin-top: 5px;">
+            </div>
+
+            <p style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">
+                เลือกคู่แข่งขันที่ต้องการใส่ลงในบิลนี้:</p>
+            <div id="modalSelectMatchList" style="max-height: 40vh; overflow-y: auto;">
+                <!-- รายการคู่แข่งขันให้เลือกตอนสร้างบิล -->
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn" onclick="confirmAddBill()">ยืนยันสร้างบิล</button>
+                <button class="btn btn-secondary" onclick="closeAddBillModal()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal สำหรับ View และแก้ไขรายละเอียดข้างในบิล -->
+    <div class="modal-overlay" id="billViewModal">
+        <div class="modal-content">
+            <h3 id="viewModalTitle">รายละเอียดบิล</h3>
+
+            <div
+                style="display: flex; gap: 15px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 12px; font-weight: 600; color: #475569;">💰 จำนวนเงินเดิมพันบิลนี้
+                        (บาท):</label>
+                    <input type="number" id="modalStakeInput" value="100" min="0" oninput="updateModalPreviewCalc()"
+                        style="margin-top: 4px; font-weight: 600;">
+                </div>
+                <div id="modalBillSummaryPreview"
+                    style="flex: 1; text-align: right; font-size: 13px; font-weight: 600;">
+                    <!-- แสดงผลสรุปรายได้เฉพาะบิลนี้แบบ Real-time -->
+                </div>
+            </div>
+
+            <p style="font-size: 13px; color: #64748b; margin-top: 0;">ตั้งค่าตัวเลือก เรตราคา และค่าน้ำ
+                สำหรับคู่ที่อยู่ในบิลนี้:</p>
+
+            <div id="viewModalBody" style="max-height: 40vh; overflow-y: auto;">
+                <!-- ตารางตั้งค่าเฉพาะคู่ในบิล -->
+            </div>
+
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button class="btn" onclick="saveBillDetails()">บันทึกการเปลี่ยนแปลง</button>
+                <button class="btn btn-secondary" onclick="closeViewModal()">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pop-up ย่อยสำหรับเลือกเรตราคา (เด้งทับเหนือ Modal หลัก) -->
+    <div class="hdp-sub-modal-overlay" id="hdpSubModal">
+        <div class="hdp-sub-modal-box">
+            <h4 id="hdpSubModalTitle">เลือกเรตราคา</h4>
+
+            <!-- ส่วนเลือกเครื่องหมาย + - (จะซ่อนเมื่อเป็น สูง/ต่ำ) -->
+            <div class="hdp-sign-toggle" id="hdpSignToggleContainer">
+                <button type="button" class="hdp-sign-btn" id="btnSignPlus" onclick="setPopupSign('+')">+</button>
+                <button type="button" class="hdp-sign-btn" id="btnSignMinus" onclick="setPopupSign('-')">-</button>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <input type="number" step="0.25" id="hdpCustomInput" placeholder="ระบุหรือเลือกด้านล่าง"
+                    style="font-size: 15px; font-weight: 600; text-align: center;">
+            </div>
+
+            <div class="hdp-preset-grid">
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(0)">0</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(0.25)">0.25</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(0.5)">0.5</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(0.75)">0.75</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(1.0)">1.0</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(1.25)">1.25</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(1.5)">1.5</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(1.75)">1.75</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(2.0)">2.0</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(2.25)">2.25</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(2.5)">2.5</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(2.75)">2.75</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(3.0)">3.0</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(3.25)">3.25</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(3.5)">3.5</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(3.75)">3.75</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(4.0)">4.0</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(4.25)">4.25</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(4.5)">4.5</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(4.75)">4.75</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(5.0)">5.0</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(5.25)">5.25</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(5.5)">5.5</button>
+                <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(5.75)">5.75</button>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+                <button class="btn" style="flex: 1;" onclick="confirmHdpSelection()">ตกลง</button>
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeHdpSubModal()">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let bills = [];
+        let activeHdpIndex = null;
+        let currentPopupSign = "-";
+
+        window.onload = function () {
+            loadFromLocalStorage();
+            renderBillPanel();
+            calculate();
+        };
+
+        // --- LocalStorage Functions ---
+        function saveToLocalStorage() {
+            // บันทึกตารางแข่งขันหลัก
+            const rows = document.getElementById("tableBody").rows;
+            let matchesData = [];
+            for (let i = 0; i < rows.length; i++) {
+                let row = rows[i];
+                matchesData.push({
+                    date: row.querySelector("input[type='date']").value,
+                    time: row.querySelector("input[type='time']").value,
+                    status: row.querySelector(".match-status").value,
+                    home: row.querySelector(".home-team").value,
+                    away: row.querySelector(".away-team").value,
+                    scoreH: row.querySelector(".score-h").value,
+                    scoreA: row.querySelector(".score-a").value
+                });
+            }
+            localStorage.setItem("football_matches", JSON.stringify(matchesData));
+            localStorage.setItem("football_bills", JSON.stringify(bills));
+        }
+
+        function loadFromLocalStorage() {
+            const savedMatches = localStorage.getItem("football_matches");
+            const savedBills = localStorage.getItem("football_bills");
+
+            const tbody = document.getElementById("tableBody");
+            tbody.innerHTML = "";
+
+            if (savedMatches) {
+                try {
+                    let matchesData = JSON.parse(savedMatches);
+                    matchesData.forEach(m => {
+                        const newRow = document.createElement("tr");
+                        newRow.innerHTML = `
+                        <td><input type="date" value="${m.date || ''}" oninput="saveToLocalStorage()"></td>
+                        <td><input type="time" value="${m.time || ''}" oninput="saveToLocalStorage()"></td>
+                        <td>
+                            <select class="match-status" onchange="onMatchDataChanged()">
+                                <option value="not_start" ${m.status === 'not_start' ? 'selected' : ''}>ยังไม่แข่ง</option>
+                                <option value="live" ${m.status === 'live' ? 'selected' : ''}>กำลังแข่ง</option>
+                                <option value="ended" ${m.status === 'ended' ? 'selected' : ''}>จบเกม</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="home-team" value="${m.home || ''}" placeholder="ทีมเหย้า" oninput="saveToLocalStorage()"></td>
+                        <td><input type="text" class="away-team" value="${m.away || ''}" placeholder="ทีมเยือน" oninput="saveToLocalStorage()"></td>
+                        <td><input type="number" class="score-h" value="${m.scoreH || ''}" oninput="onMatchDataChanged()" placeholder="0"></td>
+                        <td><input type="number" class="score-a" value="${m.scoreA || ''}" oninput="onMatchDataChanged()" placeholder="0"></td>
+                        <td><button class="btn-danger-row" onclick="removeRow(this)">ลบ</button></td>
+                    `;
+                        tbody.appendChild(newRow);
+                    });
+                } catch (e) {
+                    console.error("Error loading matches:", e);
+                }
+            }
+
+            if (savedBills) {
+                try {
+                    bills = JSON.parse(savedBills);
+                } catch (e) {
+                    console.error("Error loading bills:", e);
+                    bills = [];
+                }
+            }
+        }
+
+        function onMatchDataChanged() {
+            saveToLocalStorage();
+            renderBillPanel();
+        }
+
+        function clearAllData() {
+            if (confirm("คุณต้องการล้างข้อมูลทั้งหมด (ตารางแข่งและบิลทั้งหมด) ใช่หรือไม่?")) {
+                localStorage.removeItem("football_matches");
+                localStorage.removeItem("football_bills");
+                bills = [];
+                document.getElementById("tableBody").innerHTML = "";
+                renderBillPanel();
+                calculate();
+            }
+        }
+
+        function openAddBillModal() {
+            document.getElementById("modalBillName").value = `บิลที่ ${bills.length + 1}`;
+
+            const rows = document.getElementById("tableBody").rows;
+            const container = document.getElementById("modalSelectMatchList");
+            container.innerHTML = "";
+
+            if (rows.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 15px; font-size: 13px;">ยังไม่มีคู่แข่งขันในตารางหลัก กรุณาเพิ่มแถวการแข่งขันก่อนสร้างบิล</div>`;
+            } else {
+                let html = `
+                <table class="view-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">เลือก</th>
+                            <th style="width: 250px;">คู่แข่งขัน</th>
+                            <th style="width: 150px;">สถานะ / สกอร์</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+                for (let r = 0; r < rows.length; r++) {
+                    let hTeam = rows[r].querySelector(".home-team").value.trim() || `ทีมเหย้า ${r + 1}`;
+                    let aTeam = rows[r].querySelector(".away-team").value.trim() || `ทีมเยือน ${r + 1}`;
+                    let statusVal = rows[r].querySelector(".match-status").value;
+                    let sH = rows[r].querySelector(".score-h").value || '0';
+                    let sA = rows[r].querySelector(".score-a").value || '0';
+
+                    let statusText = { "not_start": "ยังไม่แข่ง", "live": "กำลังแข่ง", "ended": "จบเกม" }[statusVal];
+
+                    html += `
+                    <tr>
+                        <td><input type="checkbox" class="new-bill-match-chk" data-row="${r}" style="width: 18px; height: 18px; cursor: pointer;"></td>
+                        <td><b>${hTeam}</b> vs <b>${aTeam}</b></td>
+                        <td>[${statusText}] สกอร์: ${sH}-${sA}</td>
+                    </tr>
+                `;
+                }
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+            }
+
+            document.getElementById("addBillModal").style.display = "flex";
+        }
+
+        function closeAddBillModal() {
+            document.getElementById("addBillModal").style.display = "none";
+        }
+
+        function confirmAddBill() {
+            const customName = document.getElementById("modalBillName").value.trim();
+            const billTitle = customName !== "" ? customName : `บิลที่ ${bills.length + 1}`;
+
+            const chks = document.querySelectorAll(".new-bill-match-chk");
+            let selectedItems = [];
+
+            chks.forEach(chk => {
+                if (chk.checked) {
+                    let rIdx = parseInt(chk.getAttribute("data-row"));
+                    selectedItems.push({
+                        rowIndex: rIdx,
+                        choice: "HOME",
+                        hdp: "-0.25",
+                        odds: "0.95"
+                    });
+                }
+            });
+
+            bills.push({
+                name: billTitle,
+                stake: 100,
+                items: selectedItems
+            });
+
+            closeAddBillModal();
+            saveToLocalStorage();
+            renderBillPanel();
+            calculate();
+        }
+
+        function removeBill(bIdx) {
+            bills.splice(bIdx, 1);
+            saveToLocalStorage();
+            renderBillPanel();
+            calculate();
+        }
+
+        function renderBillPanel() {
+            const container = document.getElementById("billListContainer");
+            container.innerHTML = "";
+
+            if (bills.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: #94a3b8; font-size: 13px; padding: 10px;">ยังไม่มีบิลแข่งขัน</div>`;
+                calculate();
+                return;
+            }
+
+            bills.forEach((bill, bIdx) => {
+                let res = calculateBillFinancial(bill);
+                let profitColor = res.netProfit >= 0 ? "#059669" : "#dc2626";
+
+                let div = document.createElement("div");
+                div.className = "bill-item-row";
+                div.innerHTML = `
+                <div class="bill-item-top">
+                    <span><b>${bill.name}</b></span>
+                    <div class="bill-item-actions">
+                        <button class="btn-view" onclick="openBillViewModal(${bIdx})">View</button>
+                        <button class="btn-danger-sub" onclick="removeBill(${bIdx})">x</button>
+                    </div>
+                </div>
+                <div class="bill-item-info">
+                    <span>ทุน: <b>${(bill.stake || 0).toLocaleString()}</b> ฿</span>
+                    <span>กำไร/ขาดทุน: <b style="color: ${profitColor};">${res.netProfit > 0 ? '+' : ''}${res.netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ฿</b></span>
+                </div>
+            `;
+                container.appendChild(div);
+            });
+
+            calculate();
+        }
+
+        let currentViewBillIdx = null;
+        function openBillViewModal(bIdx) {
+            currentViewBillIdx = bIdx;
+            const bill = bills[bIdx];
+            document.getElementById("viewModalTitle").innerText = `รายละเอียด: ${bill.name}`;
+            document.getElementById("modalStakeInput").value = bill.stake;
+
+            const container = document.getElementById("viewModalBody");
+            const mainRows = document.getElementById("tableBody").rows;
+
+            let html = `
+            <table class="view-table">
+                <thead>
+                    <tr>
+                        <th style="width: 180px;">คู่แข่งขัน</th>
+                        <th style="width: 100px;">สถานะ</th>
+                        <th style="width: 140px;">ตัวเลือก</th>
+                        <th style="width: 110px;">เรต</th>
+                        <th style="width: 80px;">ค่าน้ำ</th>
+                        <th style="width: 90px;">ผลลัพธ์</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+            if (!bill.items || bill.items.length === 0) {
+                html += `<tr><td colspan="6" style="color: #94a3b8; padding: 20px;">ยังไม่มีคู่แข่งขันในบิลนี้</td></tr>`;
+            } else {
+                bill.items.forEach((item, index) => {
+                    let r = item.rowIndex;
+                    if (!mainRows[r]) return;
+
+                    let hTeam = mainRows[r].querySelector(".home-team").value.trim() || `ทีมเหย้า`;
+                    let aTeam = mainRows[r].querySelector(".away-team").value.trim() || `ทีมเยือน`;
+                    let statusVal = mainRows[r].querySelector(".match-status").value;
+
+                    let badgeClass = "status-notstart";
+                    let badgeText = "ยังไม่แข่ง";
+                    if (statusVal === "live") { badgeClass = "status-live"; badgeText = "กำลังแข่ง"; }
+                    else if (statusVal === "ended") { badgeClass = "status-ended"; badgeText = "จบเกม"; }
+
+                    let statusHtml = calculateSingleMatchResult(r, item);
+
+                    html += `
+                    <tr>
+                        <td><b>${hTeam}</b> vs <b>${aTeam}</b></td>
+                        <td><span class="badge-status ${badgeClass}">${badgeText}</span></td>
+                        <td>
+                            <select class="modal-choice" data-index="${index}" onchange="onChoiceChange(${index})">
+                                <option value="">-- เลือก --</option>
+                                <option value="HOME" ${item.choice === 'HOME' ? 'selected' : ''}>เหย้า (${hTeam})</option>
+                                <option value="AWAY" ${item.choice === 'AWAY' ? 'selected' : ''}>เยือน (${aTeam})</option>
+                                <option value="OVER" ${item.choice === 'OVER' ? 'selected' : ''}>สูง (Over)</option>
+                                <option value="UNDER" ${item.choice === 'UNDER' ? 'selected' : ''}>ต่ำ (Under)</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="modal-hdp" data-index="${index}" value="${item.hdp}" readonly onclick="openHdpSubModal(${index})" placeholder="เรตราคา" style="cursor: pointer; background-color: #fff;">
+                        </td>
+                        <td><input type="number" step="0.01" class="modal-odds" data-index="${index}" value="${item.odds}" oninput="updateModalPreviewCalc()"></td>
+                        <td>${statusHtml}</td>
+                    </tr>
+                `;
+                });
+            }
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+            updateModalPreviewCalc();
+            document.getElementById("billViewModal").style.display = "flex";
+        }
+
+        // เปิด Pop-up ย่อยสำหรับเลือกเรตราคา
+        function openHdpSubModal(index) {
+            activeHdpIndex = index;
+            const input = document.querySelector(`.modal-hdp[data-index="${index}"]`);
+            const choiceSel = document.querySelector(`.modal-choice[data-index="${index}"]`);
+            let isOverUnder = (choiceSel && (choiceSel.value === 'OVER' || choiceSel.value === 'UNDER'));
+
+            let valStr = input.value.trim();
+            let signContainer = document.getElementById("hdpSignToggleContainer");
+            let numInput = document.getElementById("hdpCustomInput");
+
+            if (isOverUnder) {
+                signContainer.style.display = "none";
+                numInput.value = valStr.replace(/^[+-]/, "");
+            } else {
+                signContainer.style.display = "flex";
+                if (valStr.startsWith("+")) {
+                    currentPopupSign = "+";
+                    numInput.value = valStr.substring(1);
+                } else if (valStr.startsWith("-")) {
+                    currentPopupSign = "-";
+                    numInput.value = valStr.substring(1);
+                } else {
+                    currentPopupSign = "-";
+                    numInput.value = valStr;
+                }
+                updateSignButtonUI();
+            }
+
+            document.getElementById("hdpSubModal").style.display = "flex";
+        }
+
+        function setPopupSign(sign) {
+            currentPopupSign = sign;
+            updateSignButtonUI();
+        }
+
+        function updateSignButtonUI() {
+            const btnPlus = document.getElementById("btnSignPlus");
+            const btnMinus = document.getElementById("btnSignMinus");
+            if (currentPopupSign === "+") {
+                btnPlus.classList.add("active");
+                btnMinus.classList.remove("active");
+            } else {
+                btnMinus.classList.add("active");
+                btnPlus.classList.remove("active");
+            }
+        }
+
+        function pickHdpValue(val) {
+            document.getElementById("hdpCustomInput").value = val;
+        }
+
+        function confirmHdpSelection() {
+            if (activeHdpIndex === null) return;
+            const numInput = document.getElementById("hdpCustomInput");
+            const choiceSel = document.querySelector(`.modal-choice[data-index="${activeHdpIndex}"]`);
+            let isOverUnder = (choiceSel && (choiceSel.value === 'OVER' || choiceSel.value === 'UNDER'));
+            let val = numInput.value.trim();
+
+            const input = document.querySelector(`.modal-hdp[data-index="${activeHdpIndex}"]`);
+            if (isOverUnder || val === "0" || val === "") {
+                input.value = val;
+            } else {
+                input.value = currentPopupSign + val;
+            }
+
+            closeHdpSubModal();
+            updateModalPreviewCalc();
+        }
+
+        function closeHdpSubModal() {
+            document.getElementById("hdpSubModal").style.display = "none";
+            activeHdpIndex = null;
+        }
+
+        function onChoiceChange(index) {
+            const choiceSel = document.querySelector(`.modal-choice[data-index="${index}"]`);
+            const input = document.querySelector(`.modal-hdp[data-index="${index}"]`);
+            let isOverUnder = (choiceSel.value === 'OVER' || choiceSel.value === 'UNDER');
+
+            if (isOverUnder) {
+                input.value = input.value.replace(/^[+-]/, "");
+            } else {
+                if (!input.value.startsWith("+") && !input.value.startsWith("-") && input.value !== "") {
+                    input.value = "-" + input.value;
+                }
+            }
+            updateModalPreviewCalc();
+        }
+
+        function updateModalPreviewCalc() {
+            if (currentViewBillIdx === null) return;
+            const bill = bills[currentViewBillIdx];
+
+            let tempStake = parseFloat(document.getElementById("modalStakeInput").value) || 0;
+            let dummyBill = JSON.parse(JSON.stringify(bill));
+            dummyBill.stake = tempStake;
+
+            if (dummyBill.items) {
+                dummyBill.items.forEach((item, index) => {
+                    const choiceSel = document.querySelector(`.modal-choice[data-index="${index}"]`);
+                    const hdpInput = document.querySelector(`.modal-hdp[data-index="${index}"]`);
+                    const oddsInput = document.querySelector(`.modal-odds[data-index="${index}"]`);
+                    if (choiceSel) item.choice = choiceSel.value;
+                    if (hdpInput) item.hdp = hdpInput.value.trim();
+                    if (oddsInput) item.odds = oddsInput.value;
+                });
+            }
+
+            let res = calculateBillFinancial(dummyBill);
+            let color = res.netProfit >= 0 ? "#059669" : "#dc2626";
+
+            document.getElementById("modalBillSummaryPreview").innerHTML = `
+            ผลลัพธ์: <span style="color: ${color};">${res.netProfit > 0 ? '+' : ''}${res.netProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ฿</span>
+        `;
+        }
+
+        function closeViewModal() {
+            document.getElementById("billViewModal").style.display = "none";
+        }
+
+        function saveBillDetails() {
+            if (currentViewBillIdx === null) return;
+            const bill = bills[currentViewBillIdx];
+
+            bill.stake = parseFloat(document.getElementById("modalStakeInput").value) || 0;
+
+            bill.items.forEach((item, index) => {
+                const choiceSel = document.querySelector(`.modal-choice[data-index="${index}"]`);
+                const hdpInput = document.querySelector(`.modal-hdp[data-index="${index}"]`);
+                const oddsInput = document.querySelector(`.modal-odds[data-index="${index}"]`);
+
+                if (choiceSel) item.choice = choiceSel.value;
+                if (hdpInput) item.hdp = hdpInput.value.trim();
+                if (oddsInput) item.odds = oddsInput.value;
+            });
+
+            closeViewModal();
+            saveToLocalStorage();
+            renderBillPanel();
+        }
+
+        function addRow() {
+            const tbody = document.getElementById("tableBody");
+            const newRow = document.createElement("tr");
+
+            newRow.innerHTML = `
+            <td><input type="date" oninput="saveToLocalStorage()"></td>
+            <td><input type="time" oninput="saveToLocalStorage()"></td>
+            <td>
+                <select class="match-status" onchange="onMatchDataChanged()">
+                    <option value="not_start">ยังไม่แข่ง</option>
+                    <option value="live">กำลังแข่ง</option>
+                    <option value="ended">จบเกม</option>
+                </select>
+            </td>
+            <td><input type="text" class="home-team" placeholder="ทีมเหย้า" oninput="saveToLocalStorage()"></td>
+            <td><input type="text" class="away-team" placeholder="ทีมเยือน" oninput="saveToLocalStorage()"></td>
+            <td><input type="number" class="score-h" oninput="onMatchDataChanged()" placeholder="0"></td>
+            <td><input type="number" class="score-a" oninput="onMatchDataChanged()" placeholder="0"></td>
+            <td><button class="btn-danger-row" onclick="removeRow(this)">ลบ</button></td>
+        `;
+            tbody.appendChild(newRow);
+            saveToLocalStorage();
+        }
+
+        function removeRow(btn) {
+            const row = btn.closest("tr");
+            const rowIndex = Array.from(row.parentNode.rows).indexOf(row);
+            row.remove();
+
+            bills.forEach(bill => {
+                if (bill.items) {
+                    bill.items = bill.items.filter(item => item.rowIndex !== rowIndex);
+                    bill.items.forEach(item => {
+                        if (item.rowIndex > rowIndex) {
+                            item.rowIndex--;
+                        }
+                    });
+                }
+            });
+
+            saveToLocalStorage();
+            renderBillPanel();
+        }
+
+        function calculateSingleMatchResult(r, item) {
+            const rows = document.getElementById("tableBody").rows;
+            if (!rows[r]) return `<span class="pending">-</span>`;
+
+            const statusVal = rows[r].querySelector(".match-status").value;
+            if (statusVal === "not_start") {
+                return `<span class="pending">รอแข่ง</span>`;
+            }
+
+            const scoreH = rows[r].querySelector(".score-h").value;
+            const scoreA = rows[r].querySelector(".score-a").value;
+
+            if (scoreH === "" || scoreA === "" || !item.choice || item.hdp === "") {
+                return `<span class="pending">-</span>`;
+            }
+
+            let hScore = parseInt(scoreH);
+            let aScore = parseInt(scoreA);
+            let hdpNum = parseFloat(item.hdp);
+
+            if (isNaN(hdpNum)) return `<span class="pending">เรตผิด</span>`;
+
+            let status = "pending";
+            let text = "-";
+
+            if (item.choice === "HOME" || item.choice === "AWAY") {
+                let diff = (hScore - aScore);
+                if (item.choice === "AWAY") diff = (aScore - hScore);
+
+                let totalCalc = diff + hdpNum;
+
+                if (hdpNum === -0.25) {
+                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; }
+                    else { status = "lose"; text = "เสียเต็ม"; }
+                } else if (hdpNum === 0.25 && item.choice === "HOME") {
+                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; }
+                    else if (totalCalc === 0) { status = "win"; text = "ได้ครึ่ง"; }
+                    else { status = "lose"; text = "เสียเต็ม"; }
+                } else {
+                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; }
+                    else if (totalCalc === 0) { status = "draw"; text = "เจ๊า"; }
+                    else { status = "lose"; text = "เสียเต็ม"; }
+                }
+            } else if (item.choice === "OVER" || item.choice === "UNDER") {
+                let totalScore = hScore + aScore;
+                if (item.choice === "OVER") {
+                    if (totalScore > hdpNum) { status = "win"; text = "สูง-ได้เต็ม"; }
+                    else { status = "lose"; text = "สูง-เสียเต็ม"; }
+                } else if (item.choice === "UNDER") {
+                    if (totalScore < hdpNum) { status = "win"; text = "ต่ำ-ได้เต็ม"; }
+                    else { status = "lose"; text = "ต่ำ-เสียเต็ม"; }
+                }
+            }
+
+            return `<span class="${status}">${text}</span>`;
+        }
+
+        function calculateBillFinancial(bill) {
+            const rows = document.getElementById("tableBody").rows;
+            let winCount = 0, loseCount = 0, drawCount = 0;
+            let stake = bill.stake || 0;
+            let netProfit = 0;
+            let isAllFinishedOrValid = true;
+
+            if (!bill.items || bill.items.length === 0) {
+                return { winCount, loseCount, drawCount, netProfit: 0 };
+            }
+
+            let currentMultiplier = 1;
+            let hasActiveMatch = false;
+
+            bill.items.forEach(item => {
+                let r = item.rowIndex;
+                if (!rows[r]) return;
+
+                const statusVal = rows[r].querySelector(".match-status").value;
+                if (statusVal === "not_start") {
+                    isAllFinishedOrValid = false;
+                    return;
+                }
+
+                hasActiveMatch = true;
+                const scoreH = rows[r].querySelector(".score-h").value;
+                const scoreA = rows[r].querySelector(".score-a").value;
+                if (scoreH === "" || scoreA === "" || !item.choice || item.hdp === "") {
+                    isAllFinishedOrValid = false;
+                    return;
+                }
+
+                let hScore = parseInt(scoreH);
+                let aScore = parseInt(scoreA);
+                let hdpNum = parseFloat(item.hdp);
+                let oddsVal = parseFloat(item.odds) || 0.95;
+                if (isNaN(hdpNum)) return;
+
+                let status = "pending";
+
+                if (item.choice === "HOME" || item.choice === "AWAY") {
+                    let diff = (hScore - aScore);
+                    if (item.choice === "AWAY") diff = (aScore - hScore);
+                    let totalCalc = diff + hdpNum;
+
+                    if (hdpNum === -0.25) {
+                        if (totalCalc > 0) status = "win";
+                        else status = "lose";
+                    } else {
+                        if (totalCalc > 0) status = "win";
+                        else if (totalCalc === 0) status = "draw";
+                        else status = "lose";
+                    }
+                } else if (item.choice === "OVER" || item.choice === "UNDER") {
+                    let totalScore = hScore + aScore;
+                    if (item.choice === "OVER") {
+                        if (totalScore > hdpNum) status = "win";
+                        else status = "lose";
+                    } else if (item.choice === "UNDER") {
+                        if (totalScore < hdpNum) status = "win";
+                        else status = "lose";
+                    }
+                }
+
+                if (status === "win") {
+                    winCount++;
+                    currentMultiplier *= (1 + oddsVal);
+                } else if (status === "lose") {
+                    loseCount++;
+                    currentMultiplier = 0;
+                } else if (status === "draw") {
+                    drawCount++;
+                }
+            });
+
+            if (!hasActiveMatch) {
+                netProfit = 0;
+            } else if (loseCount > 0) {
+                netProfit = -stake;
+            } else if (currentMultiplier > 1) {
+                let totalPayout = stake * currentMultiplier;
+                netProfit = totalPayout - stake;
+            } else {
+                netProfit = 0;
+            }
+
+            return { winCount, loseCount, drawCount, netProfit };
+        }
+
+        function calculate() {
+            let totalStakeAll = 0;
+            let totalNetProfitAll = 0;
+
+            bills.forEach(bill => {
+                totalStakeAll += (bill.stake || 0);
+                let res = calculateBillFinancial(bill);
+                totalNetProfitAll += res.netProfit;
+            });
+
+            updateSummaryDisplay(totalStakeAll, totalNetProfitAll);
+        }
+
+        function updateSummaryDisplay(totalStake, totalNetProfit) {
+            const container = document.getElementById("summaryGridContainer");
+            container.innerHTML = "";
+
+            if (bills.length === 0) {
+                container.innerHTML = `<div style="color: #94a3b8; font-size: 13px; width: 100%;">ยังไม่มีข้อมูลบิลสำหรับสรุปผล</div>`;
+                return;
+            }
+
+            let profitColor = totalNetProfit >= 0 ? "#059669" : "#dc2626";
+
+            container.innerHTML = `
+            <div class="summary-box">
+                <h4>จำนวนบิลทั้งหมด</h4>
+                <div style="color: var(--primary-color);">${bills.length} บิล</div>
+            </div>
+            <div class="summary-box">
+                <h4>ยอดเงินเดิมพันรวม (ทุน)</h4>
+                <div style="color: #2563eb;">${totalStake.toLocaleString()} ฿</div>
+            </div>
+            <div class="summary-box">
+                <h4>กำไร/ขาดทุนสุทธิรวม</h4>
+                <div style="color: ${profitColor};">${totalNetProfit > 0 ? '+' : ''}${totalNetProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ฿</div>
+            </div>
+        `;
+        }
+    </script>
+
+</body>
+
+</html>
