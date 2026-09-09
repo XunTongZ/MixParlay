@@ -23,72 +23,49 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 10px;
-        }
-
-        @media (min-width: 768px) {
-            body {
-                padding: 20px;
-            }
+            padding: 12px;
+            box-sizing: border-box;
+            overflow-x: hidden; /* ป้องกันไม่ให้หน้าเว็บเลื่อนซ้าย-ขวา */
         }
 
         .container {
             max-width: 1350px;
             margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .header-container {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
             position: relative;
-            text-align: center;
-        }
-
-        @media (min-width: 768px) {
-            .header-container {
-                flex-direction: row;
-                margin-bottom: 25px;
-                text-align: left;
-            }
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .header-title {
+            text-align: center;
             color: var(--primary-color);
             margin: 0;
             font-weight: 600;
-            font-size: 1.25rem;
-        }
-
-        @media (min-width: 768px) {
-            .header-title {
-                font-size: 1.5rem;
-                flex-grow: 1;
-                text-align: center;
-            }
+            flex-grow: 1;
+            font-size: 18px;
         }
 
         .btn-clear-all {
             background-color: #ef4444;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
             font-family: 'Prompt', sans-serif;
             font-weight: 500;
-            font-size: 13px;
+            font-size: 12px;
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
-        }
-
-        @media (min-width: 768px) {
-            .btn-clear-all {
-                position: absolute;
-                right: 0;
-            }
         }
 
         .btn-clear-all:hover {
@@ -98,42 +75,24 @@
 
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 380px;
             gap: 15px;
             align-items: start;
-        }
-
-        @media (min-width: 1024px) {
-            .main-layout {
-                grid-template-columns: 1fr 380px;
-                gap: 20px;
-            }
         }
 
         .card {
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 12px;
-        }
-
-        @media (min-width: 768px) {
-            .card {
-                padding: 20px;
-            }
-        }
-
-        /* Responsive Table Container */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            padding: 15px;
+            overflow-x: auto; /* ให้ตารางเลื่อนภายในตัวเองได้เมื่อหน้าจอแคบมาก */
+            box-sizing: border-box;
         }
 
         .controls {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
@@ -158,8 +117,8 @@
 
         .btn-view {
             background-color: #3b82f6;
-            padding: 4px 12px;
-            font-size: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
             border-radius: 6px;
             cursor: pointer;
             color: white;
@@ -174,7 +133,7 @@
         .btn-danger-sub {
             background-color: #ef4444;
             padding: 4px 8px;
-            font-size: 12px;
+            font-size: 11px;
             border-radius: 6px;
             cursor: pointer;
             color: white;
@@ -189,10 +148,10 @@
             background-color: #fee2e2;
             color: #dc2626;
             border: 1px solid #fca5a5;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .btn-danger-row:hover {
@@ -204,21 +163,14 @@
             border-collapse: collapse;
             text-align: center;
             font-size: 13px;
-            min-width: 700px;
-        }
-
-        @media (min-width: 768px) {
-            table {
-                font-size: 14px;
-                min-width: auto;
-                table-layout: fixed;
-            }
+            table-layout: fixed;
+            min-width: 720px; /* บังคับความกว้างขั้นต่ำของตารางเพื่อให้สัดส่วนฟิลด์ไม่เบียดกันจนพัง และเลื่อนดูใน Card ได้ */
         }
 
         th,
         td {
             border: 1px solid var(--border-color);
-            padding: 8px 6px;
+            padding: 6px 4px;
             word-wrap: break-word;
             overflow: hidden;
         }
@@ -243,7 +195,7 @@
             border-radius: 6px;
             text-align: center;
             font-family: 'Prompt', sans-serif;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         input:focus,
@@ -257,7 +209,7 @@
             display: inline-block;
             padding: 3px 6px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 500;
         }
 
@@ -281,33 +233,25 @@
         }
 
         @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.6;
-            }
-
-            100% {
-                opacity: 1;
-            }
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
 
         .bill-panel-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--primary-color);
             margin-top: 0;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border-bottom: 2px solid var(--border-color);
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .bill-list-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .bill-item-row {
@@ -315,9 +259,9 @@
             flex-direction: column;
             background: #f8fafc;
             border: 1px solid var(--border-color);
-            padding: 10px 14px;
+            padding: 10px 12px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             gap: 6px;
         }
 
@@ -332,7 +276,7 @@
             display: flex;
             justify-content: space-between;
             color: #64748b;
-            font-size: 12px;
+            font-size: 11px;
             border-top: 1px dashed #e2e8f0;
             padding-top: 4px;
         }
@@ -348,7 +292,7 @@
             font-weight: 600;
             background-color: #ecfdf5;
             border-radius: 4px;
-            padding: 4px;
+            padding: 3px;
         }
 
         .lose {
@@ -356,7 +300,7 @@
             font-weight: 600;
             background-color: #fef2f2;
             border-radius: 4px;
-            padding: 4px;
+            padding: 3px;
         }
 
         .draw {
@@ -364,7 +308,7 @@
             font-weight: 600;
             background-color: #fffbeb;
             border-radius: 4px;
-            padding: 4px;
+            padding: 3px;
         }
 
         .pending {
@@ -376,67 +320,35 @@
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-        }
-
-        @media (min-width: 768px) {
-            .summary-card {
-                margin-top: 20px;
-                padding: 15px 20px;
-            }
+            padding: 12px 15px;
         }
 
         .summary-grid {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: space-around;
             text-align: center;
             flex-wrap: wrap;
         }
 
-        @media (min-width: 768px) {
-            .summary-grid {
-                gap: 20px;
-            }
-        }
-
         .summary-box {
             background: #f8fafc;
             border: 1px solid var(--border-color);
-            padding: 10px 12px;
+            padding: 8px 12px;
             border-radius: 8px;
             flex: 1;
             min-width: 140px;
         }
 
-        @media (min-width: 768px) {
-            .summary-box {
-                min-width: 180px;
-                padding: 10px 15px;
-            }
-        }
-
         .summary-box h4 {
-            margin: 0 0 5px 0;
+            margin: 0 0 4px 0;
             color: #475569;
             font-size: 12px;
-        }
-
-        @media (min-width: 768px) {
-            .summary-box h4 {
-                font-size: 13px;
-            }
         }
 
         .summary-box div {
             font-size: 14px;
             font-weight: 600;
-        }
-
-        @media (min-width: 768px) {
-            .summary-box div {
-                font-size: 15px;
-            }
         }
 
         .modal-overlay {
@@ -456,35 +368,24 @@
 
         .modal-content {
             background: white;
-            padding: 15px;
+            padding: 18px;
             border-radius: 12px;
             width: 100%;
-            max-width: 950px;
-            max-height: 90vh;
+            max-width: 900px;
+            max-height: 85vh;
             overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             text-align: left;
             font-family: 'Prompt', sans-serif;
             position: relative;
-        }
-
-        @media (min-width: 768px) {
-            .modal-content {
-                padding: 25px;
-            }
+            box-sizing: border-box;
         }
 
         .modal-content h3 {
             margin-top: 0;
             color: var(--primary-color);
             text-align: center;
-            font-size: 1.1rem;
-        }
-
-        @media (min-width: 768px) {
-            .modal-content h3 {
-                font-size: 1.35rem;
-            }
+            font-size: 16px;
         }
 
         .view-table {
@@ -492,21 +393,14 @@
             border-collapse: collapse;
             font-size: 12px;
             margin-top: 10px;
+            table-layout: fixed;
             min-width: 600px;
-        }
-
-        @media (min-width: 768px) {
-            .view-table {
-                font-size: 13px;
-                min-width: auto;
-                table-layout: fixed;
-            }
         }
 
         .view-table th,
         .view-table td {
             border: 1px solid #cbd5e1;
-            padding: 8px 6px;
+            padding: 6px 4px;
             text-align: center;
             word-wrap: break-word;
         }
@@ -517,9 +411,9 @@
 
         .modal-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .btn-secondary {
@@ -530,7 +424,7 @@
             background-color: #475569;
         }
 
-        /* Pop-up ย่อยสำหรับเลือกเรตราคา (เด้งทับเหนือ Modal หลัก) */
+        /* Pop-up ย่อยสำหรับเลือกเรตราคา */
         .hdp-sub-modal-overlay {
             display: none;
             position: fixed;
@@ -551,16 +445,11 @@
             padding: 15px;
             border-radius: 12px;
             width: 100%;
-            max-width: 320px;
+            max-width: 300px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             text-align: center;
             border: 1px solid var(--border-color);
-        }
-
-        @media (min-width: 768px) {
-            .hdp-sub-modal-box {
-                padding: 20px;
-            }
+            box-sizing: border-box;
         }
 
         .hdp-sub-modal-box h4 {
@@ -570,23 +459,16 @@
             font-size: 14px;
         }
 
-        @media (min-width: 768px) {
-            .hdp-sub-modal-box h4 {
-                font-size: 15px;
-                margin-bottom: 15px;
-            }
-        }
-
         .hdp-preset-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 15px;
+            gap: 5px;
+            margin-bottom: 12px;
         }
 
         .hdp-preset-btn {
-            padding: 8px 4px;
-            font-size: 12px;
+            padding: 6px 2px;
+            font-size: 11px;
             font-weight: 600;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
@@ -604,14 +486,14 @@
 
         .hdp-sign-toggle {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 12px;
         }
 
         .hdp-sign-btn {
             flex: 1;
-            padding: 8px;
-            font-size: 14px;
+            padding: 6px;
+            font-size: 13px;
             font-weight: 600;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
@@ -623,6 +505,34 @@
             background: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+        }
+
+        /* Responsive Media Query สำหรับหน้าจอสมาร์ทโฟน (รวมถึง iPhone 13 แนวตั้ง: ความกว้าง <= 850px) */
+        @media screen and (max-width: 850px) {
+            body {
+                padding: 6px;
+            }
+
+            .main-layout {
+                grid-template-columns: 1fr; /* เปลี่ยนเป็น 1 คอลัมน์เรียงลงมา ไม่ให้ล้นจอ */
+                gap: 12px;
+            }
+
+            .header-container {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .btn-clear-all {
+                position: static;
+                width: 100%;
+                margin-top: 5px;
+            }
+
+            .header-title {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -641,31 +551,29 @@
                 <div class="controls">
                     <button class="btn" onclick="addRow()">+ เพิ่มแถวการแข่งขัน</button>
                 </div>
-                <div class="table-responsive">
-                    <table id="footballTable">
-                        <thead>
-                            <tr>
-                                <th style="width: 100px;">วันที่</th>
-                                <th style="width: 75px;">เวลา</th>
-                                <th style="width: 110px;">สถานะ</th>
-                                <th style="width: 130px;">เหย้า</th>
-                                <th style="width: 130px;">เยือน</th>
-                                <th class="score-header" style="width: 65px;">สกอร์เหย้า</th>
-                                <th class="score-header" style="width: 65px;">สกอร์เยือน</th>
-                                <th style="width: 70px;">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <!-- ข้อมูลจะถูกโหลดจาก LocalStorage อัตโนมัติ -->
-                        </tbody>
-                    </table>
-                </div>
+                <table id="footballTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 95px;">วันที่</th>
+                            <th style="width: 70px;">เวลา</th>
+                            <th style="width: 100px;">สถานะ</th>
+                            <th style="width: 120px;">เหย้า</th>
+                            <th style="width: 120px;">เยือน</th>
+                            <th class="score-header" style="width: 60px;">สกอร์เหย้า</th>
+                            <th class="score-header" style="width: 60px;">สกอร์เยือน</th>
+                            <th style="width: 65px;">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- ข้อมูลจะถูกโหลดจาก LocalStorage อัตโนมัติ -->
+                    </tbody>
+                </table>
             </div>
 
             <!-- ฝั่งขวา: รายชื่อบิลและการจัดการ -->
             <div class="card">
                 <h3 class="bill-panel-title">จัดการบิลแข่งขัน</h3>
-                <div class="controls" style="margin-bottom: 15px;">
+                <div class="controls" style="margin-bottom: 12px;">
                     <button class="btn" style="background-color: #3b82f6; width: 100%;" onclick="openAddBillModal()">+
                         สร้างบิลใหม่</button>
                 </div>
@@ -677,7 +585,7 @@
 
         <!-- ส่วนสรุปผลภาพรวมด้านล่าง -->
         <div class="summary-card">
-            <h4 style="margin: 0 0 10px 0; color: var(--primary-color); font-size: 13px;">📊 สรุปภาพรวมทุกบิล (ยอดรวมทั้งสิ้น)</h4>
+            <h4 style="margin: 0 0 8px 0; color: var(--primary-color); font-size: 13px;">📊 สรุปภาพรวมทุกบิล (ยอดรวมทั้งสิ้น)</h4>
             <div class="summary-grid" id="summaryGridContainer"></div>
         </div>
     </div>
@@ -686,15 +594,15 @@
     <div class="modal-overlay" id="addBillModal">
         <div class="modal-content">
             <h3>สร้างบิลใหม่</h3>
-            <div style="margin-bottom: 15px;">
-                <label style="font-size: 13px; font-weight: 500;">ชื่อบิล:</label>
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 12px; font-weight: 500;">ชื่อบิล:</label>
                 <input type="text" id="modalBillName" placeholder="เช่น บิลชุดสเต็ป, บิลเดี่ยว VIP"
-                    style="margin-top: 5px;">
+                    style="margin-top: 4px;">
             </div>
 
-            <p style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">
+            <p style="font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 6px;">
                 เลือกคู่แข่งขันที่ต้องการใส่ลงในบิลนี้:</p>
-            <div class="table-responsive" id="modalSelectMatchList" style="max-height: 40vh;">
+            <div id="modalSelectMatchList" style="max-height: 40vh; overflow-y: auto;">
                 <!-- รายการคู่แข่งขันให้เลือกตอนสร้างบิล -->
             </div>
 
@@ -711,27 +619,25 @@
             <h3 id="viewModalTitle">รายละเอียดบิล</h3>
 
             <div
-                style="display: flex; flex-direction: column; gap: 10px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px;">
-                <div style="width: 100%;">
-                    <label style="font-size: 12px; font-weight: 600; color: #475569;">💰 จำนวนเงินเดิมพันบิลนี้
-                        (บาท):</label>
+                style="display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 140px;">
+                    <label style="font-size: 11px; font-weight: 600; color: #475569;">💰 จำนวนเงินเดิมพัน (บาท):</label>
                     <input type="number" id="modalStakeInput" value="100" min="0" oninput="updateModalPreviewCalc()"
                         style="margin-top: 4px; font-weight: 600;">
                 </div>
                 <div id="modalBillSummaryPreview"
-                    style="width: 100%; text-align: left; font-size: 13px; font-weight: 600;">
+                    style="flex: 1; text-align: right; font-size: 12px; font-weight: 600; min-width: 140px;">
                     <!-- แสดงผลสรุปรายได้เฉพาะบิลนี้แบบ Real-time -->
                 </div>
             </div>
 
-            <p style="font-size: 13px; color: #64748b; margin-top: 0;">ตั้งค่าตัวเลือก เรตราคา และค่าน้ำ
-                สำหรับคู่ที่อยู่ในบิลนี้:</p>
+            <p style="font-size: 12px; color: #64748b; margin-top: 0;">ตั้งค่าตัวเลือก เรตราคา และค่าน้ำ สำหรับคู่ที่อยู่ในบิลนี้:</p>
 
-            <div class="table-responsive" id="viewModalBody" style="max-height: 40vh;">
+            <div id="viewModalBody" style="max-height: 40vh; overflow-y: auto;">
                 <!-- ตารางตั้งค่าเฉพาะคู่ในบิล -->
             </div>
 
-            <div class="modal-buttons" style="margin-top: 20px;">
+            <div class="modal-buttons" style="margin-top: 15px;">
                 <button class="btn" onclick="saveBillDetails()">บันทึกการเปลี่ยนแปลง</button>
                 <button class="btn btn-secondary" onclick="closeViewModal()">ปิดหน้าต่าง</button>
             </div>
@@ -743,15 +649,15 @@
         <div class="hdp-sub-modal-box">
             <h4 id="hdpSubModalTitle">เลือกเรตราคา</h4>
 
-            <!-- ส่วนเลือกเครื่องหมาย + - (จะซ่อนเมื่อเป็น สูง/ต่ำ) -->
+            <!-- ส่วนเลือกเครื่องหมาย + - -->
             <div class="hdp-sign-toggle" id="hdpSignToggleContainer">
                 <button type="button" class="hdp-sign-btn" id="btnSignPlus" onclick="setPopupSign('+')">+</button>
                 <button type="button" class="hdp-sign-btn" id="btnSignMinus" onclick="setPopupSign('-')">-</button>
             </div>
 
-            <div style="margin-bottom: 12px;">
+            <div style="margin-bottom: 10px;">
                 <input type="number" step="0.25" id="hdpCustomInput" placeholder="ระบุหรือเลือกด้านล่าง"
-                    style="font-size: 15px; font-weight: 600; text-align: center;">
+                    style="font-size: 14px; font-weight: 600; text-align: center;">
             </div>
 
             <div class="hdp-preset-grid">
@@ -781,9 +687,9 @@
                 <button type="button" class="hdp-preset-btn" onclick="pickHdpValue(5.75)">5.75</button>
             </div>
 
-            <div style="display: flex; gap: 8px;">
-                <button class="btn" style="flex: 1;" onclick="confirmHdpSelection()">ตกลง</button>
-                <button class="btn btn-secondary" style="flex: 1;" onclick="closeHdpSubModal()">ยกเลิก</button>
+            <div style="display: flex; gap: 6px;">
+                <button class="btn" style="flex: 1; padding: 6px;" onclick="confirmHdpSelection()">ตกลง</button>
+                <button class="btn btn-secondary" style="flex: 1; padding: 6px;" onclick="closeHdpSubModal()">ยกเลิก</button>
             </div>
         </div>
     </div>
@@ -801,7 +707,6 @@
 
         // --- LocalStorage Functions ---
         function saveToLocalStorage() {
-            // บันทึกตารางแข่งขันหลัก
             const rows = document.getElementById("tableBody").rows;
             let matchesData = [];
             for (let i = 0; i < rows.length; i++) {
@@ -889,15 +794,15 @@
             container.innerHTML = "";
 
             if (rows.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 15px; font-size: 13px;">ยังไม่มีคู่แข่งขันในตารางหลัก กรุณาเพิ่มแถวการแข่งขันก่อนสร้างบิล</div>`;
+                container.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 15px; font-size: 12px;">ยังไม่มีคู่แข่งขันในตารางหลัก กรุณาเพิ่มแถวการแข่งขันก่อนสร้างบิล</div>`;
             } else {
                 let html = `
                 <table class="view-table">
                     <thead>
                         <tr>
-                            <th style="width: 50px;">เลือก</th>
-                            <th style="width: 250px;">คู่แข่งขัน</th>
-                            <th style="width: 150px;">สถานะ / สกอร์</th>
+                            <th style="width: 45px;">เลือก</th>
+                            <th style="width: 180px;">คู่แข่งขัน</th>
+                            <th style="width: 120px;">สถานะ / สกอร์</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -913,7 +818,7 @@
 
                     html += `
                     <tr>
-                        <td><input type="checkbox" class="new-bill-match-chk" data-row="${r}" style="width: 18px; height: 18px; cursor: pointer;"></td>
+                        <td><input type="checkbox" class="new-bill-match-chk" data-row="${r}" style="width: 16px; height: 16px; cursor: pointer;"></td>
                         <td><b>${hTeam}</b> vs <b>${aTeam}</b></td>
                         <td>[${statusText}] สกอร์: ${sH}-${sA}</td>
                     </tr>
@@ -973,7 +878,7 @@
             container.innerHTML = "";
 
             if (bills.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: #94a3b8; font-size: 13px; padding: 10px;">ยังไม่มีบิลแข่งขัน</div>`;
+                container.innerHTML = `<div style="text-align: center; color: #94a3b8; font-size: 12px; padding: 10px;">ยังไม่มีบิลแข่งขัน</div>`;
                 calculate();
                 return;
             }
@@ -1017,19 +922,19 @@
             <table class="view-table">
                 <thead>
                     <tr>
-                        <th style="width: 180px;">คู่แข่งขัน</th>
-                        <th style="width: 100px;">สถานะ</th>
-                        <th style="width: 140px;">ตัวเลือก</th>
-                        <th style="width: 110px;">เรต</th>
-                        <th style="width: 80px;">ค่าน้ำ</th>
-                        <th style="width: 90px;">ผลลัพธ์</th>
+                        <th style="width: 140px;">คู่แข่งขัน</th>
+                        <th style="width: 80px;">สถานะ</th>
+                        <th style="width: 120px;">ตัวเลือก</th>
+                        <th style="width: 90px;">เรต</th>
+                        <th style="width: 70px;">ค่าน้ำ</th>
+                        <th style="width: 80px;">ผลลัพธ์</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
             if (!bill.items || bill.items.length === 0) {
-                html += `<tr><td colspan="6" style="color: #94a3b8; padding: 20px;">ยังไม่มีคู่แข่งขันในบิลนี้</td></tr>`;
+                html += `<tr><td colspan="6" style="color: #94a3b8; padding: 15px;">ยังไม่มีคู่แข่งขันในบิลนี้</td></tr>`;
             } else {
                 bill.items.forEach((item, index) => {
                     let r = item.rowIndex;
@@ -1075,7 +980,6 @@
             document.getElementById("billViewModal").style.display = "flex";
         }
 
-        // เปิด Pop-up ย่อยสำหรับเลือกเรตราคา
         function openHdpSubModal(index) {
             activeHdpIndex = index;
             const input = document.querySelector(`.modal-hdp[data-index="${index}"]`);
@@ -1426,7 +1330,7 @@
             container.innerHTML = "";
 
             if (bills.length === 0) {
-                container.innerHTML = `<div style="color: #94a3b8; font-size: 13px; width: 100%;">ยังไม่มีข้อมูลบิลสำหรับสรุปผล</div>`;
+                container.innerHTML = `<div style="color: #94a3b8; font-size: 12px; width: 100%;">ยังไม่มีข้อมูลบิลสำหรับสรุปผล</div>`;
                 return;
             }
 
