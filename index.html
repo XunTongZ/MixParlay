@@ -1141,46 +1141,90 @@
             let stepMultiplier = 1;
 
             if (item.choice === "HOME" || item.choice === "AWAY") {
-                let totalCalc = diff + hdpNum;
+    // ฟังก์ชันประเมินผลเรตเดี่ยว (จำนวนเต็ม หรือ .5)
+    const evalSingle = (h) => {
+        let totalCalc = diff + h;
+        if (totalCalc > 0) return { status: "win", mult: 1 + oddsVal };
+        if (totalCalc === 0) return { status: "draw", mult: 1 };
+        return { status: "lose", mult: 0 };
+    };
 
-                // ตรวจสอบ Handicap แบบควบ (เช่น -0.25, -0.5, -0.75, ฯลฯ)
-                if (hdpNum === -0.25) {
-                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else if (totalCalc === -0.25) { status = "lose-half"; text = "แพ้ครึ่ง"; stepMultiplier = 0.5; }
-                    else { status = "lose"; text = "เสียเต็ม"; stepMultiplier = 0; }
-                } else if (hdpNum === 0.25) {
-                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else if (totalCalc === 0) { status = "win-half"; text = "ได้ครึ่ง"; stepMultiplier = 1 + (oddsVal / 2); }
-                    else { status = "lose"; text = "เสียเต็ม"; stepMultiplier = 0; }
-                } else if (hdpNum === -0.5) {
-                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else { status = "lose"; text = "เสียเต็ม"; stepMultiplier = 0; }
-                } else if (hdpNum === 0.5) {
-                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else { status = "win-half"; text = "ได้ครึ่ง"; stepMultiplier = 1 + (oddsVal / 2); }
-                } else if (hdpNum === -0.75) {
-                    if (totalCalc > 0.25) { status = "win"; text = "ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else if (totalCalc === 0) { status = "win-half"; text = "ได้ครึ่ง"; stepMultiplier = 1 + (oddsVal / 2); }
-                    else { status = "lose"; text = "เสียเต็ม"; stepMultiplier = 0; }
-                } else if (hdpNum === 0.75) {
-                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else if (totalCalc === 0) { status = "win-half"; text = "ได้ครึ่ง"; stepMultiplier = 1 + (oddsVal / 2); }
-                    else { status = "lose"; text = "เสียเต็ม"; stepMultiplier = 0; }
-                } else {
-                    if (totalCalc > 0) { status = "win"; text = "ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else if (totalCalc === 0) { status = "draw"; text = "เจ๊า"; stepMultiplier = 1; }
-                    else { status = "lose"; text = "เสียเต็ม"; stepMultiplier = 0; }
-                }
-            } else if (item.choice === "OVER" || item.choice === "UNDER") {
-                let totalScore = hScore + aScore;
-                if (item.choice === "OVER") {
-                    if (totalScore > hdpNum) { status = "win"; text = "สูง-ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else { status = "lose"; text = "สูง-เสียเต็ม"; stepMultiplier = 0; }
-                } else if (item.choice === "UNDER") {
-                    if (totalScore < hdpNum) { status = "win"; text = "ต่ำ-ได้เต็ม"; stepMultiplier = 1 + oddsVal; }
-                    else { status = "lose"; text = "ต่ำ-เสียเต็ม"; stepMultiplier = 0; }
-                }
-            }
+    // ตรวจสอบว่าเป็นเรตควบ (Quarter Handicap เช่น .25 หรือ .75) หรือไม่
+    let isQuarter = Math.abs(Math.round(hdpNum * 4) % 2) === 1;
+
+    if (isQuarter) {
+        // เรตควบจะแบ่งเงินเดิมพันออกเป็น 2 ส่วน (ห่างกัน 0.5)
+        let r1 = evalSingle(hdpNum - 0.25);
+        let r2 = evalSingle(hdpNum + 0.25);
+
+        stepMultiplier = (r1.mult + r2.mult) / 2;
+
+        if (stepMultiplier === 1 + oddsVal) {
+            status = "win"; text = "ได้เต็ม";
+        } else if (stepMultiplier === 1 + (oddsVal / 2)) {
+            status = "win-half"; text = "ได้ครึ่ง";
+        } else if (stepMultiplier === 0.5) {
+            status = "lose-half"; text = "แพ้ครึ่ง";
+        } else if (stepMultiplier === 0) {
+            status = "lose"; text = "เสียเต็ม";
+        } else {
+            status = "draw"; text = "เจ๊า";
+        }
+    } else {
+        // เรตปกติ (ราคาเต็ม หรือ ครึ่งลูก เช่น 0, 0.5, 1, 1.5, 2, ... และฝั่งลบ)
+        let r = evalSingle(hdpNum);
+        status = r.status;
+        stepMultiplier = r.mult;
+
+        if (status === "win") text = "ได้เต็ม";
+        else if (status === "draw") text = "เจ๊า";
+        else text = "เสียเต็ม";
+    }
+} else if (item.choice === "OVER" || item.choice === "UNDER") {
+    let totalScore = hScore + aScore;
+    let isQuarterOU = Math.abs(Math.round(hdpNum * 4) % 2) === 1;
+
+    const evalOUSingle = (line, isOver) => {
+        if (isOver) {
+            if (totalScore > line) return { status: "win", mult: 1 + oddsVal };
+            if (totalScore === line) return { status: "draw", mult: 1 };
+            return { status: "lose", mult: 0 };
+        } else {
+            if (totalScore < line) return { status: "win", mult: 1 + oddsVal };
+            if (totalScore === line) return { status: "draw", mult: 1 };
+            return { status: "lose", mult: 0 };
+        }
+    };
+
+    if (isQuarterOU) {
+        let isOver = (item.choice === "OVER");
+        let r1 = evalOUSingle(hdpNum - 0.25, isOver);
+        let r2 = evalOUSingle(hdpNum + 0.25, isOver);
+
+        stepMultiplier = (r1.mult + r2.mult) / 2;
+
+        if (stepMultiplier === 1 + oddsVal) {
+            status = "win"; text = (isOver ? "สูง" : "ต่ำ") + "-ได้เต็ม";
+        } else if (stepMultiplier === 1 + (oddsVal / 2)) {
+            status = "win-half"; text = (isOver ? "สูง" : "ต่ำ") + "-ได้ครึ่ง";
+        } else if (stepMultiplier === 0.5) {
+            status = "lose-half"; text = (isOver ? "สูง" : "ต่ำ") + "-แพ้ครึ่ง";
+        } else if (stepMultiplier === 0) {
+            status = "lose"; text = (isOver ? "สูง" : "ต่ำ") + "-เสียเต็ม";
+        } else {
+            status = "draw"; text = "เจ๊า";
+        }
+    } else {
+        let isOver = (item.choice === "OVER");
+        let r = evalOUSingle(hdpNum, isOver);
+        status = r.status;
+        stepMultiplier = r.mult;
+
+        if (status === "win") text = (isOver ? "สูง" : "ต่ำ") + "-ได้เต็ม";
+        else if (status === "draw") text = "เจ๊า";
+        else text = (isOver ? "สูง" : "ต่ำ") + "-เสียเต็ม";
+    }
+}
 
             let cssClass = "draw";
             if (status === "win" || status === "win-half") cssClass = "win";
